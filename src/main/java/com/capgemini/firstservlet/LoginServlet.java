@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet
 		String userID = getServletConfig().getInitParameter("user");
 		String password = getServletConfig().getInitParameter("password");
 		
-		if(user.matches("^[A-Z]{1}[A-Za-z]{2,}$") && password.equals(pwd))
+		if(user.matches("^[A-Z]{1}[A-Za-z]{2,}$") && pwd.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"))
 		{
 			request.setAttribute("user", user);
 			request.getRequestDispatcher("LoginSuccess.jsp").forward(request, response);
@@ -41,7 +41,16 @@ public class LoginServlet extends HttpServlet
 		{
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
 			PrintWriter out = response.getWriter();
-			out.println("<font color=red>Either user name or password is wrong.</font>");
+			
+			if(!user.matches("^[A-Z]{1}[A-Za-z]{2,}$"))
+			{
+				out.println("<font color=red>User name is incorrect.</font>");
+			}
+			else if(!pwd.matches("^(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*?&])[A-Za-z0-9@$!%*?&]{8,}$"))
+			{
+				out.println("<font color=red>Password is incorrect.</font>");
+			}
+
 			rd.include(request, response);
 		}
 	}
